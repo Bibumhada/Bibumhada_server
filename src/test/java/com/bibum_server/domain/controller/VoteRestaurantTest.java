@@ -1,11 +1,10 @@
-package com.bibum_server.domain.presentation;
+package com.bibum_server.domain.controller;
 
 import com.bibum_server.domain.AbstractRestDocsTests;
 import com.bibum_server.domain.TestUtil;
-import com.bibum_server.domain.application.RoomService;
+import com.bibum_server.domain.service.RoomService;
 import com.bibum_server.domain.dto.request.VoteReq;
 import com.bibum_server.domain.dto.response.MostPopularRestaurantRes;
-import com.bibum_server.domain.dto.response.RestaurantRes;
 import com.bibum_server.domain.dto.response.VoteRes;
 import com.bibum_server.domain.restaurant.entity.Restaurant;
 import com.bibum_server.domain.restaurant.repository.RestaurantRepository;
@@ -24,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -78,7 +76,7 @@ public class VoteRestaurantTest extends AbstractRestDocsTests {
         given(roomService.voteRestaurant(any(),any())).willReturn(voteRes);
 
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/{roomId}/vote",
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/{roomId}/vote",
                 roomId).contentType(MediaType.APPLICATION_JSON)
                         .content(VoteRequest))
                 .andExpect(status().isOk())
@@ -98,7 +96,7 @@ public class VoteRestaurantTest extends AbstractRestDocsTests {
         given(roomService.checkBestRestaurant(roomId)).willReturn(mostPopularRestaurantRes);
         //then
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{roomId}/result",roomId))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/{roomId}/result",roomId))
                 .andExpect(status().isOk())
                 .andDo(restDocs.document());
     }

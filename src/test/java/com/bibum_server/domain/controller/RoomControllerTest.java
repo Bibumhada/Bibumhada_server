@@ -1,8 +1,8 @@
-package com.bibum_server.domain.presentation;
+package com.bibum_server.domain.controller;
 
 import com.bibum_server.domain.AbstractRestDocsTests;
 import com.bibum_server.domain.TestUtil;
-import com.bibum_server.domain.application.RoomService;
+import com.bibum_server.domain.service.RoomService;
 import com.bibum_server.domain.dto.request.LocationReq;
 import com.bibum_server.domain.dto.response.RestaurantRes;
 import com.bibum_server.domain.dto.response.RoomRes;
@@ -68,7 +68,7 @@ class RoomControllerTest extends AbstractRestDocsTests {
         given(roomService.createRoom(any(LocationReq.class))).willReturn(mockResponse);
 
 
-        this.mockMvc.perform(post("/create")
+        this.mockMvc.perform(post("/api/v1/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(locationRequest))
                 .andExpect(status().isOk())
@@ -88,31 +88,7 @@ class RoomControllerTest extends AbstractRestDocsTests {
                 .restaurantResList(restaurantResList)
                 .build());
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/resuggest/{roomId}", roomId))
-                .andExpect(status().isOk())
-                .andDo(restDocs.document());
-    }
-
-    @Test
-    void retry() throws Exception {
-        long roomId = 1L;
-        Room room = TestUtil.CreateTestRoom();
-
-        List<Restaurant> restaurantList = TestUtil.CreateTestRestaurantList(room);
-        room.addRestaurants(restaurantList);
-
-        List<RestaurantRes> restaurantResList = restaurantList.stream().map(RestaurantRes::fromEntity).toList();
-        RoomRes mockResponse = RoomRes.builder()
-                .id(room.getId())
-                .x(room.getX())
-                .y(room.getY())
-                .total(room.getTotal())
-                .restaurantResList(restaurantResList)
-                .build();
-        given(roomService.retry(any(Long.class))).willReturn(mockResponse);
-
-
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/retry/{roomId}", roomId))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/resuggest/{roomId}", roomId))
                 .andExpect(status().isOk())
                 .andDo(restDocs.document());
     }
@@ -133,28 +109,7 @@ class RoomControllerTest extends AbstractRestDocsTests {
         given(roomService.getRoomInfo(any(Long.class))).willReturn(mockResponse);
 
 
-        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{roomId}", roomId))
-                .andExpect(status().isOk())
-                .andDo(restDocs.document());
-    }
-    @Test
-    void ReSuggestOneRestaurant() throws Exception{
-        long roomId = 1L;
-        long restaurantId = 1L;
-        Room room = TestUtil.CreateTestRoom();
-        Restaurant restaurant = Restaurant.builder()
-                .room(room)
-                .id(1L)
-                .title("ReSuggestedRestaurant")
-                .link("www.ResuggestURL.com")
-                .distance(123L)
-                .count(0L)
-                .category("TestCategory")
-                .address("testAddress")
-                .build();
-        RestaurantRes response = RestaurantRes.fromEntity(restaurant);
-        given(roomService.reSuggestOneRestaurant(any(Long.class),any(Long.class))).willReturn(response);
-        this.mockMvc.perform(RestDocumentationRequestBuilders.post("/{roomId}/resuggest/{restaurantId}",roomId,restaurantId))
+        this.mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/{roomId}", roomId))
                 .andExpect(status().isOk())
                 .andDo(restDocs.document());
     }

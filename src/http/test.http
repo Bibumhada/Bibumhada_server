@@ -1,0 +1,33 @@
+GET https://dapi.kakao.com/v2/local/search/keyword.json?query=삼성&page=20
+
+### 방 생성
+POST http://localhost:8080/api/v1/create
+Content-Type: application/json
+
+{
+  "longitude" : "127.06283102249932",
+  "latitude" : "37.514322572335935"
+}
+
+### 방 정보 조회
+GET http://localhost:8080/api/v1/3
+
+### 방 Resuggest
+POST http://localhost:8080/api/v1/resuggest/1
+
+### 음식점 Resuggest
+POST http://localhost:8080/api/v1/3/resuggest/132
+
+### 음식점 투표
+POST http://localhost:8080/api/v1/1/vote
+Content-Type: application/json
+
+{
+  "restaurantIdList" : [14]
+}
+
+### 최고 음식점 선정
+GET http://localhost:8080/api/v1/1/result
+
+### 카카오 API 변환
+GET http://localhost:8080/api/v1/info/1
